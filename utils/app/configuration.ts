@@ -1,5 +1,5 @@
-import {KeyConfiguration, ModelType} from "@/types";
-import {NextApiRequest} from "next";
+import { KeyConfiguration, ModelType } from "@/types";
+import { NextApiRequest } from "next";
 import {
     AZURE_OPENAI_API_DEPLOYMENT_NAME,
     AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME,
@@ -12,11 +12,16 @@ import {
 } from "./const";
 
 export const getKeyConfiguration = (req: NextApiRequest): KeyConfiguration => {
+    console.log("OPENAI_TYPE:", OPENAI_TYPE);
+
     if (!OPENAI_TYPE) {
+        console.log("Getting key configuration from request headers...");
         return getKeyConfigurationFromReqHeaders(req);
     }
+
+    console.log("Getting key configuration from environment...");
     return getKeyConfigurationFromEnvironment();
-}
+};
 
 const getKeyConfigurationFromReqHeaders = (req: NextApiRequest): KeyConfiguration => {
     const apiType = req.headers['x-api-type'];
@@ -27,13 +32,14 @@ const getKeyConfigurationFromReqHeaders = (req: NextApiRequest): KeyConfiguratio
     const azureApiVersion = req.headers['x-azure-api-version'] as string;
     const azureDeploymentName = req.headers['x-azure-deployment-name'] as string;
     const azureEmbeddingDeploymentName = req.headers['x-azure-embedding-deployment-name'] as string;
-    const keyConfiguration = { apiType: apiType as ModelType, 
+    const keyConfiguration = {
+        apiType: apiType as ModelType,
         apiKey,
         apiModel,
-        azureApiKey, 
-        azureInstanceName, 
-        azureApiVersion, 
-        azureDeploymentName, 
+        azureApiKey,
+        azureInstanceName,
+        azureApiVersion,
+        azureDeploymentName,
         azureEmbeddingDeploymentName
     };
     validateKeyConfiguration(keyConfiguration);
@@ -41,6 +47,10 @@ const getKeyConfigurationFromReqHeaders = (req: NextApiRequest): KeyConfiguratio
 }
 
 const getKeyConfigurationFromEnvironment = (): KeyConfiguration => {
+    console.log("Environment Variables:");
+    console.log("OPENAI_API_KEY:", OPENAI_API_KEY);
+    console.log("OPENAI_API_MODEL:", OPENAI_API_MODEL);
+
     const apiType = OPENAI_TYPE as ModelType;
     const apiKey = OPENAI_API_KEY;
     const apiModel = OPENAI_API_MODEL;
@@ -55,14 +65,15 @@ const getKeyConfigurationFromEnvironment = (): KeyConfiguration => {
         apiKey,
         apiModel,
         azureApiKey,
-        azureInstanceName, 
-        azureApiVersion, 
-        azureDeploymentName, 
-        azureEmbeddingDeploymentName
+        azureInstanceName,
+        azureApiVersion,
+        azureDeploymentName,
+        azureEmbeddingDeploymentName,
     };
+
     validateKeyConfiguration(keyConfiguration);
     return keyConfiguration;
-}
+};
 
 const validateKeyConfiguration = (keyConfiguration: KeyConfiguration): boolean => {
     if (keyConfiguration.apiType === ModelType.OPENAI) {
