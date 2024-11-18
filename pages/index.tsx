@@ -1,26 +1,26 @@
-import {Chat} from '@/components/Chat/Chat';
-import {Navbar} from '@/components/Mobile/Navbar';
-import {Sidebar} from '@/components/Sidebar/Sidebar';
-import {ChatFolder, Conversation, KeyConfiguration, KeyValuePair, Message, ModelType,} from '@/types';
-import {cleanConversationHistory, cleanSelectedConversation,} from '@/utils/app/clean';
-import {DEFAULT_SYSTEM_PROMPT} from '@/utils/app/const';
-import {saveConversation, saveConversations, updateConversation,} from '@/utils/app/conversation';
-import {saveFolders} from '@/utils/app/folders';
-import {exportData, importData} from '@/utils/app/importExport';
-import {IconArrowBarRight} from '@tabler/icons-react';
-import {GetServerSideProps} from 'next';
-import {useTranslation} from 'next-i18next';
-import {serverSideTranslations} from 'next-i18next/serverSideTranslations';
+import { Chat } from '@/components/Chat/Chat';
+import { Navbar } from '@/components/Mobile/Navbar';
+import { Sidebar } from '@/components/Sidebar/Sidebar';
+import { ChatFolder, Conversation, KeyConfiguration, KeyValuePair, Message, ModelType, } from '@/types';
+import { cleanConversationHistory, cleanSelectedConversation, } from '@/utils/app/clean';
+import { DEFAULT_SYSTEM_PROMPT } from '@/utils/app/const';
+import { saveConversation, saveConversations, updateConversation, } from '@/utils/app/conversation';
+import { saveFolders } from '@/utils/app/folders';
+import { exportData, importData } from '@/utils/app/importExport';
+import { IconArrowBarRight } from '@tabler/icons-react';
+import { GetServerSideProps } from 'next';
+import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
-import {useEffect, useRef, useState} from 'react';
-import {KeySettingsAlertDialog} from "@/components/Sidebar/KeySettingsAlert";
+import { useEffect, useRef, useState } from 'react';
+import { KeySettingsAlertDialog } from "@/components/Sidebar/KeySettingsAlert";
 
 interface HomeProps {
     serverSideApiKeyIsSet: boolean;
 }
 
-const Home: React.FC<HomeProps> = ({serverSideApiKeyIsSet}) => {
-    const {t} = useTranslation('chat');
+const Home: React.FC<HomeProps> = ({ serverSideApiKeyIsSet }) => {
+    const { t } = useTranslation('chat');
     const [folders, setFolders] = useState<ChatFolder[]>([]);
     const [conversations, setConversations] = useState<Conversation[]>([]);
     const [selectedConversation, setSelectedConversation] =
@@ -53,12 +53,12 @@ const Home: React.FC<HomeProps> = ({serverSideApiKeyIsSet}) => {
 
     const handleShowKeyConfigurationAlertCancel = () => {
         setShowKeyConfigurationAlert(false);
-      };
-    
-      const handleShowKeyConfigurationAlertContinue = () => {
+    };
+
+    const handleShowKeyConfigurationAlertContinue = () => {
         setShowKeyConfigurationAlert(false);
         handleKeyConfigurationButtonClick();
-      };
+    };
 
     const handleKeyConfigurationValidation = (): boolean => {
         if (!serverSideApiKeyIsSet && !keyConfiguration.apiKey && !keyConfiguration.azureApiKey) {
@@ -126,18 +126,18 @@ const Home: React.FC<HomeProps> = ({serverSideApiKeyIsSet}) => {
             } else {
                 response = await fetch(
                     `/api/query?message=${message.content}&indexName=${updatedConversation.index.indexName}`, {
-                        method: 'GET',
-                        headers: {
-                            'x-api-type': keyConfiguration.apiType ?? '',
-                            'x-api-key': keyConfiguration.apiKey ?? '',
-                            'x-api-model': keyConfiguration.apiModel ?? '',
-                            'x-azure-api-key': keyConfiguration.azureApiKey ?? '',
-                            'x-azure-instance-name': keyConfiguration.azureInstanceName ?? '',
-                            'x-azure-api-version': keyConfiguration.azureApiVersion ?? '',
-                            'x-azure-deployment-name': keyConfiguration.azureDeploymentName ?? '',
-                            'x-azure-embedding-deployment-name': keyConfiguration.azureEmbeddingDeploymentName ?? '',
-                        },
-                    });
+                    method: 'GET',
+                    headers: {
+                        'x-api-type': keyConfiguration.apiType ?? '',
+                        'x-api-key': keyConfiguration.apiKey ?? '',
+                        'x-api-model': keyConfiguration.apiModel ?? '',
+                        'x-azure-api-key': keyConfiguration.azureApiKey ?? '',
+                        'x-azure-instance-name': keyConfiguration.azureInstanceName ?? '',
+                        'x-azure-api-version': keyConfiguration.azureApiVersion ?? '',
+                        'x-azure-deployment-name': keyConfiguration.azureDeploymentName ?? '',
+                        'x-azure-embedding-deployment-name': keyConfiguration.azureEmbeddingDeploymentName ?? '',
+                    },
+                });
             }
 
             if (!response.ok) {
@@ -159,7 +159,7 @@ const Home: React.FC<HomeProps> = ({serverSideApiKeyIsSet}) => {
             }
 
             if (updatedConversation.messages.length === 1) {
-                const {content} = message;
+                const { content } = message;
                 const customName =
                     content.length > 30 ? content.substring(0, 30) + '...' : content;
 
@@ -183,7 +183,7 @@ const Home: React.FC<HomeProps> = ({serverSideApiKeyIsSet}) => {
                     done = true;
                     break;
                 }
-                const {value, done: doneReading} = await reader.read();
+                const { value, done: doneReading } = await reader.read();
                 done = doneReading;
                 const chunkValue = decoder.decode(value);
 
@@ -193,7 +193,7 @@ const Home: React.FC<HomeProps> = ({serverSideApiKeyIsSet}) => {
                     isFirst = false;
                     const updatedMessages: Message[] = [
                         ...updatedConversation.messages,
-                        {role: 'assistant', content: chunkValue},
+                        { role: 'assistant', content: chunkValue },
                     ];
 
                     updatedConversation = {
@@ -334,9 +334,8 @@ const Home: React.FC<HomeProps> = ({serverSideApiKeyIsSet}) => {
 
         const newConversation: Conversation = {
             id: lastConversation ? lastConversation.id + 1 : 1,
-            name: `${t('Conversation')} ${
-                lastConversation ? lastConversation.id + 1 : 1
-            }`,
+            name: `${t('Conversation')} ${lastConversation ? lastConversation.id + 1 : 1
+                }`,
             messages: [],
             prompt: DEFAULT_SYSTEM_PROMPT,
             folderId: 0,
@@ -394,7 +393,7 @@ const Home: React.FC<HomeProps> = ({serverSideApiKeyIsSet}) => {
             [data.key]: data.value,
         };
 
-        const {single, all} = updateConversation(
+        const { single, all } = updateConversation(
             updatedConversation,
             conversations,
         );
@@ -439,7 +438,7 @@ const Home: React.FC<HomeProps> = ({serverSideApiKeyIsSet}) => {
                 messages: updatedMessages,
             };
 
-            const {single, all} = updateConversation(
+            const { single, all } = updateConversation(
                 updatedConversation,
                 conversations,
             );
@@ -521,10 +520,10 @@ const Home: React.FC<HomeProps> = ({serverSideApiKeyIsSet}) => {
         <>
             <Head>
                 <title>ChatFiles</title>
-                <meta name="description" content="ChatGPT but better."/>
+                <meta name="description" content="ChatGPT but better." />
                 <meta name="viewport"
-                      content="height=device-height ,width=device-width, initial-scale=1, user-scalable=no"/>
-                <link rel="icon" href="/favicon.ico"/>
+                    content="height=device-height ,width=device-width, initial-scale=1, user-scalable=no" />
+                <link rel="icon" href="/favicon.ico" />
             </Head>
             {showKeyConfigurationAlert && (
                 <KeySettingsAlertDialog onCancellation={handleShowKeyConfigurationAlertCancel} onContinue={handleShowKeyConfigurationAlertContinue} />
@@ -597,7 +596,7 @@ const Home: React.FC<HomeProps> = ({serverSideApiKeyIsSet}) => {
 };
 export default Home;
 
-export const getServerSideProps: GetServerSideProps = async ({locale}) => {
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
     return {
         props: {
             serverSideApiKeyIsSet: !!process.env.OPENAI_TYPE,
