@@ -34,7 +34,7 @@ const Home: React.FC<HomeProps> = ({ serverSideApiKeyIsSet }) => {
     const [showKeyConfigurationAlert, setShowKeyConfigurationAlert] = useState(false);
     const [keyConfiguration, setKeyConfiguration] = useState<KeyConfiguration>({
         apiType: ModelType.OPENAI,
-        apiKey: '',
+        apiKey: process.env.OPENAI_API_KEY || '', // Pulls the key from the environment
         apiModel: 'gpt-3.5-turbo',
         azureApiKey: '',
         azureInstanceName: '',
