@@ -7,7 +7,7 @@ import { KeyConfiguration, ModelType } from "@/types";
 
 const client = createClient(SUPABASE_URL!, SUPABASE_KEY!);
 
-const sanitizeContent = (content) => {
+const sanitizeContent = (content: string | undefined): string => {
   if (!content) return '';
 
   const sanitizedContent = content
